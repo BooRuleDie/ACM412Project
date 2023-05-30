@@ -1,0 +1,67 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %} <title>Login</title> {% endblock title %}
+
+{% block style %}
+    <style>
+        /* Styling for mobile devices with screen width up to 768px */
+        @media only screen and (max-width: 768px) {
+            .alert-danger {
+                margin: auto;
+                width: 75%;
+            }
+
+            #login-panel {
+                width: 75%;
+            }
+        }
+
+        /* Styling for desktop devices with screen width greater than 768px */
+        @media only screen and (min-width: 769px) {
+            .alert-danger {
+                position: fixed;
+                right: 15px;
+                top: 5px;
+                width: 25%
+            }
+        
+            #login-panel {
+                width: 45%;
+            }
+        }
+    </style>
+{% endblock style %}
+
+{% block body_content %}
+    <!-- Sour Icon -->
+    
+    <img class="mx-auto d-block mt-3" src="{% static 'sour.svg' %}" style="width: 100px" alt="sour icon">
+
+    {% if failedLogin %}
+        <!-- Alert Dialog -->
+        <div class="alert alert-danger text-center my-3" role="alert">
+            Username or password is not correct !
+        </div>
+    {% endif %}
+    
+    <!-- Login Form -->
+    <div class="container m-auto border rounded-3 p-3 text-center mt-3"  id="login-panel">
+        <h1 class="fw-bold">Login</h1>
+        <hr>
+            <form method="POST">
+                <h4>Username</h4>
+                <input type="text" class="form-control mb-3 text-center" id="username" placeholder="booruledie" name="username">
+                <h4>Password</h4>
+                <input type="password" class="form-control mb-3 text-center" id="password" placeholder="******" name="password">
+                <button type="submit" class="btn btn-warning fw-bold">Login</button>
+
+                {% csrf_token %}
+            </form>
+    </div>
+
+    <!-- Sign Up Redirect Link -->
+    <div class="text-center my-3"><a href="#"><button class="btn btn-outline-warning">Create an Account</button></a></div>
+{% endblock body_content %}
+
+

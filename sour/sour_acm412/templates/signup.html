@@ -1,0 +1,67 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %} <title>Signup</title> {% endblock title %}
+
+{% block style %}
+    <style>
+        /* Styling for mobile devices with screen width up to 768px */
+        @media only screen and (max-width: 768px) {
+            .alert-danger {
+                margin: auto;
+                width: 75%;
+            }
+
+            #signup-panel {
+                width: 75%;
+            }
+        }
+
+        /* Styling for desktop devices with screen width greater than 768px */
+        @media only screen and (min-width: 769px) {
+            .alert-danger {
+                position: fixed;
+                right: 15px;
+                top: 5px;
+                width: 25%
+            }
+        
+            #signup-panel {
+                width: 45%;
+            }
+        }
+    </style>
+{% endblock style %}
+
+{% block body_content %}
+    <!-- Sour Icon -->
+    <img class="mx-auto d-block mt-3" src="{% static 'sour.svg' %}" style="width: 100px" alt="sour icon">
+
+    {% if failedSignup %}
+        <!-- Alert Dialog -->
+        <div class="alert alert-danger text-center my-3" role="alert">
+            This username has already taken!
+        </div>
+    {% endif %}
+
+    <!-- Sign Up Form -->
+    <div class="container m-auto border rounded-3 p-3 text-center mt-3 mb-5" id="signup-panel">
+        <h1 class="fw-bold">Sign Up</h1>
+        <hr>
+            <form method="POST">
+                <h4>Firstname</h4>
+                <input type="text" class="form-control mb-3 text-center" id="firstname" placeholder="booruledie" name="firstname">
+                <h4>Lastname</h4>
+                <input type="text" class="form-control mb-3 text-center" id="lastname" placeholder="booruledie" name="lastname">
+                <h4>Email</h4>
+                <input type="email" class="form-control mb-3 text-center" id="email" placeholder="booruledie" name="email">
+                <h4>Username</h4>
+                <input type="text" class="form-control mb-3 text-center" id="username" placeholder="booruledie" name="username">
+                <h4>Password</h4>
+                <input type="password" class="form-control mb-3 text-center" id="password" placeholder="******" name="password">
+                <button type="submit" class="btn btn-warning fw-bold">Sign Up</button>
+                
+                {% csrf_token %}
+            </form>
+    </div>
+{% endblock body_content %}
