@@ -49,7 +49,7 @@
   <div class="row"> {% for topic in last_8_topics %} <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 text-center p-1">
       <div class="border rounded-3 m-3">
         <h5 class="m-2 fw-bold">{{ topic.title|truncatechars:"18" }}</h5>
-        <p>{{ topic.origin_comment|truncatechars:"56"}}</p>
+        <p>{{ topic.origin_comment|truncatechars:"51"}}</p>
         <a href="/topic/{{ topic.id }}" class="btn btn-warning mb-3">Go to topic</a>
       </div>
     </div> {% endfor %} </div>
