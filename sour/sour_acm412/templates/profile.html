@@ -80,7 +80,9 @@
           </h1>
       </div>
       <!-- Don't show this button if the viewer is not the person who owns the profile -->
-      <button class="btn btn-outline-warning mx-auto mt-5" id="update-user-info">Update User Info</button>
+      {% if current_user == profile_owner_id %}
+        <button class="btn btn-outline-warning mx-auto mt-5" id="update-user-info">Update User Info</button>
+      {% endif %}
       <hr class="my-5">
     </div>
   </div>

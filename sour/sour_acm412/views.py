@@ -84,6 +84,7 @@ def Profile(request, user_id):
     context = {
             "summary": user.summary,
             "username" : user.username,
+            "profile_owner_id" : str(user.id),
             "user_topics": Topics.objects.filter(user_id = user.id)[:8]
     }
 
@@ -104,11 +105,13 @@ def TopicView(request, topic_id):
         "topic_id" : topic.id,
         "title" : topic.title,
         "username" : topic.user_id.username,
+        "user_id" : topic.user_id.id,
         "origin_comment" : topic.origin_comment,
         "comments" : [
                 {
                     "comment_id" : comment.id,
                     "comment_username" : comment.user_id.username, # since user_id column refers to the Users Model we can fetch any info from Users model through user_id column
+                    "comment_user_id" : comment.user_id.id,
                     "comment_content" : comment.comment,
                     "comment_upvotes" : comment.upvotes.count(),
                     "comment_downvotes" : comment.downvotes.count()
