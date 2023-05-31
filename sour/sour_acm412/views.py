@@ -1,19 +1,15 @@
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
-from .models import Users
+from .models import Users, Topics, Comments
 from .utils import generatePasswordHash, checkPassword
 
 # Create the Login Business Logic after the Signup View
 def Login(request):
-    try:
-        # redirect user to home if he is authenticated
-        if request.session["user_id"]:
-            print(request.session["user_id"])
-            return redirect("home")
-    # if user is not authenticated don't do anything
-    except KeyError:
-        pass
 
+    # redirect user to home if he is authenticated
+    if "user_id" in request.session:
+        return redirect("/")
+    
     context = { "failedLogin" : False }
 
     # if user submit the HTML form
@@ -27,8 +23,7 @@ def Login(request):
     
             if checkPassword(password, user.password):
                 request.session["user_id"] = str(user.id)
-                print(request.session["user_id"])
-                return redirect("home")
+                return redirect("/")
             else:
                 context['failedLogin'] = True
         # if username or password is wrong
@@ -38,14 +33,9 @@ def Login(request):
     return render(request, 'login.html', context=context)
 
 def Signup(request):
-    try:
-        # redirect user to home if he is authenticated
-        if request.session["user_id"]:
-            print(request.session["user_id"])
-            return redirect("home")
-    # if user is not authenticated don't do anything
-    except KeyError:
-        pass
+    # redirect user to home if he is authenticated
+    if "user_id" in request.session:
+        return redirect("/")
     
     context = { "failedSignup" : False }
 
@@ -71,5 +61,111 @@ def Signup(request):
     # if it's a GET request load the signup form
     return render(request, 'signup.html', context=context)
 
-def Home(request):
-        return render(request, 'home.html')
+def Home(request):       
+    context = {
+        "authenticated" : False,
+        "last_8_topics" : Topics.objects.order_by('-created_at')[:8],
+    }
+    
+    # change the content of Account Tab in the dashboard if user is authenticated -> Logout and Profile
+    if "user_id" in request.session:
+        context['authenticated'] = True
+        context['current_user'] = request.session["user_id"]
+    
+    # if user hits the logout button, remove the session cookie
+    if "logout" in request.POST:
+        del request.session["user_id"]
+        context['authenticated'] = False
+
+    return render(request, 'home.html', context=context)
+
+def Profile(request, user_id):
+    user = Users.objects.get(id=user_id)
+    context = {
+            "summary": user.summary,
+            "username" : user.username,
+            "user_topics": Topics.objects.filter(user_id = user.id)[:8]
+    }
+
+    if "user_id" in request.session:
+        context["authenticated"] = True
+        context['current_user'] = request.session["user_id"]
+
+    if "logout" in request.POST:
+        del request.session["user_id"]
+        context['authenticated'] = False
+
+    return render(request, 'profile.html', context=context)
+
+def TopicView(request, topic_id):
+    topic = Topics.objects.get(id=topic_id)
+    comments = Comments.objects.filter(topic_id = topic.id)[:4]
+    context = {
+        "topic_id" : topic.id,
+        "title" : topic.title,
+        "username" : topic.user_id.username,
+        "origin_comment" : topic.origin_comment,
+        "comments" : [
+                {
+                    "comment_id" : comment.id,
+                    "comment_username" : comment.user_id.username, # since user_id column refers to the Users Model we can fetch any info from Users model through user_id column
+                    "comment_content" : comment.comment,
+                    "comment_upvotes" : comment.upvotes.count(),
+                    "comment_downvotes" : comment.downvotes.count()
+                } for comment in comments
+        ]
+    }
+    
+    if "user_id" in request.session:
+        context["authenticated"] = True
+        context['current_user'] = request.session["user_id"]
+
+    if "logout" in request.POST:
+        del request.session["user_id"]
+        context['authenticated'] = False
+
+    return render(request, 'topic.html', context=context)
+
+def HandleModalSubmits(request):
+    # if it's a POST request and user is authenticated
+    if request.method == "POST" and "user_id" in request.session:
+        
+        # if user submit a topic registration request
+        if "register-topic" in request.POST:            
+            current_path = request.POST["current-path"]
+            title = request.POST["topic-title"]
+            comment = request.POST["topic-comment"]
+            user = Users.objects.get(id = request.session["user_id"])
+            
+            # since user_id refers to the User Model you can't assign a string value, you must assign an instance of User model
+            topic = Topics(title=title, origin_comment=comment, user_id=user)
+            
+            try:
+                topic.save()
+                return redirect(current_path)         
+            # if an error occurs redirect users to the main page
+            except IntegrityError:
+                return redirect("/")           
+
+        # if user submit a topic registration comment
+        if "register-comment" in request.POST:            
+            current_path = request.POST["current-path"]
+            topic_id = request.POST["topic-id"]
+            topic_comment = request.POST["topic-comment"]
+            user = Users.objects.get(id = request.session["user_id"])
+            topic = Topics.objects.get(id = topic_id)
+            
+            # since user_id refers to the User Model you can't assign a string value, you must assign an instance of User model
+            comment = Comments(comment = topic_comment, user_id = user, topic_id = topic)
+            
+            try:
+                comment.save()
+                return redirect(current_path)         
+            # if an error occurs redirect users to the main page
+            except IntegrityError:
+                return redirect("/")
+            
+    # if it's a GET request or if user is not authenticated return users to the login page
+    return redirect("/login")
+
+
