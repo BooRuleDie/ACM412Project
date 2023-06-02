@@ -106,7 +106,7 @@
               <input type="hidden" name="current-path" value="{{ request.path }}">
               <input type="hidden" name="topic-id" value="{{ topic_id }}">
               <h4 class="fw-bold">Comment</h4>
-              <input type="text" class="form-control mb-3 text-center" id="topic-comment" placeholder="Lorem ipsum dolor sit amet." name="topic-comment"> {% csrf_token %}
+              <input type="text" class="form-control mb-3 text-center" id="topic-comment" placeholder="I think your approach to this problem is quite wrong..." name="topic-comment" required> {% csrf_token %}
               <div class="modal-footer">
                 <button type="submit" class="btn btn-success" name="register-comment">Post Comment</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>

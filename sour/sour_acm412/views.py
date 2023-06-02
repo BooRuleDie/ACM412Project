@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
-from .models import Users, Topics, Comments
+from .models import Users, Topics, Comments, Upvotes, Downvotes
 from .utils import generatePasswordHash, checkPassword, profilePicturePath
+from .serializers import TopicSerializer, SearchTopicSerializer
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
 
 # Create the Login Business Logic after the Signup View
 def Login(request):
-
     # redirect user to home if he is authenticated
     if "user_id" in request.session:
         return redirect("/")
@@ -208,4 +212,81 @@ def HandleModalSubmits(request):
     # if it's a GET request or if user is not authenticated return users to the login page
     return redirect("/login")
 
+# Topic API for home page
+class TopicList(generics.ListAPIView):
+    serializer_class = TopicSerializer
+    
+    def get_queryset(self):
+        start_index = self.kwargs['start_index']
+        end_index = self.kwargs['end_index']
+        return Topics.objects.all()[start_index:end_index]
 
+# Search API 
+class SearchTopicList(generics.ListAPIView):
+    serializer_class = SearchTopicSerializer
+    
+    def get_queryset(self):
+        search = self.kwargs['search']     
+        return Topics.objects.filter(title__icontains = search)
+    
+# Profile Topic API
+class ProfileTopicList(generics.ListAPIView):
+    serializer_class = TopicSerializer
+    
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        user = Users.objects.get(id = user_id)
+
+        start_index = self.kwargs['start_index']
+        end_index = self.kwargs['end_index']
+        return Topics.objects.filter(user_id = user.id)[start_index:end_index]
+    
+# Fetch Comments API for particular topics
+@api_view(['GET'])
+def CommentTopicList(request, topic_id, start_index, end_index):
+    topic = Topics.objects.get(id = topic_id)
+
+    comments = Comments.objects.filter(topic_id = topic.id)[start_index:end_index]
+    APIResponse = [
+                {
+                    "comment_id" : comment.id,
+                    "comment_username" : comment.user_id.username, # since user_id column refers to the Users Model we can fetch any info from Users model through user_id column
+                    "comment_user_id" : comment.user_id.id,
+                    "comment_content" : comment.comment,
+                    "comment_upvotes" : comment.upvotes.count(),
+                    "comment_downvotes" : comment.downvotes.count()
+                } for comment in comments
+        ]
+
+    # Serialize the results and return them as JSON
+    return Response(APIResponse)
+
+# Upvote & Downvote API
+@csrf_exempt
+@api_view(['GET'])
+def UpvoteDownvote(request, option, comment_id):
+    # if user is authenticated
+    if "user_id" in request.session:
+        comment = Comments.objects.get(id = comment_id)
+        user = Users.objects.get(id = request.session["user_id"])
+        
+        if option == "upvote":
+            vote = Upvotes(user_id = user, comment_id = comment)
+        elif option == "downvote":
+            vote = Downvotes(user_id = user, comment_id = comment)
+        else:
+            return Response({"success" : 0, "info": "Unknown operation"})
+        
+        try:
+            vote.save()
+            return Response({"success" : 1, "info": "Vote has been applied"})
+        # if user has already voted, undo the operation
+        except IntegrityError:
+            if option == "upvote":
+                Upvotes.objects.filter(user_id = user, comment_id = comment).delete()
+            elif option == "downvote":
+                Downvotes.objects.filter(user_id = user, comment_id = comment).delete()
+            
+            return Response({"success" : 1, "info": "Vote has been undoed"})
+
+    return Response({"success" : 0, "info" : "Authentication Failure"})
