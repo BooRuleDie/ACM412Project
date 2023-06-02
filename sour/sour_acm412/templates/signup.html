@@ -50,15 +50,15 @@
         <hr>
             <form method="POST">
                 <h4>Firstname</h4>
-                <input type="text" class="form-control mb-3 text-center" id="firstname" placeholder="Eren" name="firstname">
+                <input type="text" class="form-control mb-3 text-center" id="firstname" placeholder="Eren" name="firstname" required>
                 <h4>Lastname</h4>
-                <input type="text" class="form-control mb-3 text-center" id="lastname" placeholder="Burulday" name="lastname">
+                <input type="text" class="form-control mb-3 text-center" id="lastname" placeholder="Burulday" name="lastname" required>
                 <h4>Email</h4>
-                <input type="email" class="form-control mb-3 text-center" id="email" placeholder="eren.burulday@mail.com" name="email">
+                <input type="email" class="form-control mb-3 text-center" id="email" placeholder="eren.burulday@mail.com" name="email" required>
                 <h4>Username</h4>
-                <input type="text" class="form-control mb-3 text-center" id="username" placeholder="booruledie" name="username">
+                <input type="text" class="form-control mb-3 text-center" id="username" placeholder="booruledie" name="username" required>
                 <h4>Password</h4>
-                <input type="password" class="form-control mb-3 text-center" id="password" placeholder="******" name="password">
+                <input type="password" class="form-control mb-3 text-center" id="password" placeholder="******" name="password" required>
                 <button type="submit" class="btn btn-warning fw-bold">Sign Up</button>
                 
                 {% csrf_token %}

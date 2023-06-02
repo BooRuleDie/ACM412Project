@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from .models import Users, Topics, Comments
-from .utils import generatePasswordHash, checkPassword
+from .utils import generatePasswordHash, checkPassword, profilePicturePath
 
 # Create the Login Business Logic after the Signup View
 def Login(request):
@@ -82,6 +82,7 @@ def Home(request):
 def Profile(request, user_id):
     user = Users.objects.get(id=user_id)
     context = {
+            "user" : user,
             "summary": user.summary,
             "username" : user.username,
             "profile_owner_id" : str(user.id),
@@ -150,7 +151,7 @@ def HandleModalSubmits(request):
             except IntegrityError:
                 return redirect("/")           
 
-        # if user submit a topic registration comment
+        # if user submit a comment registration request
         if "register-comment" in request.POST:            
             current_path = request.POST["current-path"]
             topic_id = request.POST["topic-id"]
@@ -167,6 +168,42 @@ def HandleModalSubmits(request):
             # if an error occurs redirect users to the main page
             except IntegrityError:
                 return redirect("/")
+            
+        # if user submit a update-user-info request
+        if "update-profile-info" in request.POST:  
+            user_id = request.session["user_id"]
+            current_path = request.POST["current-path"]
+            firstname = request.POST["firstname"]
+            lastname = request.POST["lastname"]
+            username = request.POST["username"]
+            email = request.POST["email"]
+            password = request.POST["password"]
+            summary = request.POST["summary"]
+            user = Users.objects.get(id = user_id)
+            # if there is such a key called profile-picture
+            if "profile-picture" in request.FILES:     
+                profile_picture = request.FILES["profile-picture"]
+                pp_path, filename = profilePicturePath(user_id)
+                user.profile_picture = filename
+                
+                # write the profile picture to the static directory in following format <user_id>_<timestamp>.png
+                with open(pp_path, "wb") as fp:
+                    for chunk in profile_picture.chunks():
+                        fp.write(chunk)
+            
+            # apply the other changes
+            user.firstname = firstname
+            user.lastname = lastname
+            user.username = username
+            user.email = email
+            user.summary = summary
+            if user.password != password:
+                user.password = generatePasswordHash(password)
+            
+            # save the changes
+            user.save()
+            
+            return redirect(current_path)
             
     # if it's a GET request or if user is not authenticated return users to the login page
     return redirect("/login")

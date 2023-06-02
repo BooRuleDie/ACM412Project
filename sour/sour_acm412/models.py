@@ -10,6 +10,7 @@ class Users(models.Model):
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=255)
     summary =  models.CharField(max_length=255, default="Hi, I'm [username], and I'm excited to be part of the conversation here on Sour! I enjoy sharing my thoughts and engaging with others on various topics such as [list your interests].")
+    profile_picture = models.CharField(max_length=255, default="pp.svg")
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

@@ -38,7 +38,8 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#">Create Topic</a>
+            <!-- Make Topic Button & Modal -->
+            <a class="nav-link" style="bottom:30px; right: 30px;" data-bs-toggle="modal" data-bs-target="#create-topic-modal" href="#">Create Topic</a>
           </li>
           </li>
           <li class="nav-item dropdown">
@@ -71,17 +72,18 @@
   <div class="container w-75">
     <div class="row">
       <div class="col col-lg-6 col-sm-12 col-12 text-center mb-3">
-        <img class="border border-5 rounded-circle" src="{% static 'pp.svg' %}" alt="empty user profile picture" width="200px" height="200px">
+        <img class="border border-5 rounded-circle" src="/static/{{ user.profile_picture }}"  alt="empty user profile picture" width="200px" height="200px">
       </div>
       <div class="col col-lg-6 col-sm-12 col-12 m-auto">
-        <p><b>Example Summary:  </b>{{ summary }}</p>
+        <h3 class="fw-bold text-center">Summary</h3>
+        <p>{{ summary }}</p>
         <h4>
           <span class="badge bg-secondary">{{ username }}</span>
           </h1>
       </div>
       <!-- Don't show this button if the viewer is not the person who owns the profile -->
       {% if current_user == profile_owner_id %}
-        <button class="btn btn-outline-warning mx-auto mt-5" id="update-user-info">Update User Info</button>
+        <button class="btn btn-outline-warning mx-auto mt-5" id="update-user-info" data-bs-toggle="modal" data-bs-target="#update-user-info-modal">Update User Info</button>
       {% endif %}
       <hr class="my-5">
     </div>
@@ -101,4 +103,69 @@
           {% endfor %}   
     </div>
   </div>
+  {% if current_user == profile_owner_id %}
+    <!-- Update User Info Modal-->
+    <div class="modal fade" id="update-user-info-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Update User Info</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container m-auto p-3 text-center" id="login-panel">
+              <form method="POST" action="/handlemodalsubmit/" enctype="multipart/form-data">
+                <input type="hidden" name="current-path" value="{{ request.path }}">
+                <h4 class="fw-bold">Firstname</h4>
+                <input type="text" class="form-control mb-3 text-center" id="firstname" placeholder="Eren" name="firstname" value="{{ user.firstname }}">
+                <h4 class="fw-bold">Lastname</h4>
+                <input type="text" class="form-control mb-3 text-center" id="lastname" placeholder="Burulday" name="lastname" value="{{ user.lastname }}">
+                <h4 class="fw-bold">Username</h4>
+                <input type="text" class="form-control mb-3 text-center" id="username" placeholder="BooRuleDie" name="username" value="{{ user.username }}">
+                <h4 class="fw-bold">Email</h4>
+                <input type="email" class="form-control mb-3 text-center" id="email" placeholder="eren.burulday@mail.com" name="email" value="{{ user.email }}">
+                <h4 class="fw-bold">Password</h4>
+                <input type="text" class="form-control mb-3 text-center" id="password" placeholder="*********" name="password" value="{{ user.password }}">
+                <h4 class="fw-bold">Summary</h4>
+                <textarea type="text" class="form-control mb-3 text-center" id="summary" placeholder="Hi, I'm [username], and I'm excited to be part of the conversation here on Sour!" name="summary">{{ user.summary }}</textarea>
+                <h4 class="fw-bold">Profile Picture</h4>
+                <input type="file" class="form-control mb-3 text-center" id="profile-picture" name="profile-picture">
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success" name="update-profile-info">Update</button>
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div> {% csrf_token %}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <!-- Create Topic Modal -->
+  <div class="modal fade" id="create-topic-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Comment</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container m-auto p-3 text-center" id="login-panel">
+            <form method="POST" action="/handlemodalsubmit/">
+              <input type="hidden" name="current-path" value="{{ request.path }}">
+              <h4 class="fw-bold">Topic Title</h4>
+              <input type="text" class="form-control mb-3 text-center" id="topic-title" placeholder="AOT is trash!" name="topic-title">
+              <h4 class="fw-bold">Comment</h4>
+              <input type="text" class="form-control mb-3 text-center" id="topic-comment" placeholder="I've never watched such a clown show in my life." name="topic-comment">
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success" name="register-topic">Post Topic</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              </div> {% csrf_token %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 {% endblock body_content %}
