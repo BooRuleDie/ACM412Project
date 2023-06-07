@@ -36,20 +36,28 @@ export default function App() {
                     <div
                         className="position-absolute text-center border border-warning z-3"
                         id="search-results"
-                        style={{backgroundColor: "#f3f3f3"}}
+                        style={{ backgroundColor: "#f3f3f3" }}
                     >
                         {topics.length === 0 && searchTerm !== "" && (
-                            <p className=" p-2 fst-italic fw-light">No Topic :(</p>
+                            <p className=" p-2 fst-italic fw-light">
+                                No Topic :(
+                            </p>
                         )}
                         {topics.map((topic) => {
                             return (
-                                <div
-                                    key={topic.id}
-                                    className="m-2 fw-bold p-2 rounded"
-                                    style={{ backgroundColor: "#e0e0e0" }}
-                                >
-                                    {topic.title.slice(0, 23) + "..."}
-                                </div>
+                                <a href={`/topic/${topic.id}/`} style={{textDecoration : "none", color: "black"}} >
+                                    <div
+                                        key={topic.id}
+                                        onClick={(topic) => handleClick(topic)}
+                                        className="m-2 fw-bold p-2 rounded"
+                                        style={{
+                                            backgroundColor: "#e0e0e0",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        {topic.title.slice(0, 23) + "..."}
+                                    </div>
+                                </a>
                             );
                         })}
                     </div>
