@@ -1,4 +1,28 @@
-{% extends 'master.html' %} {% load static %} {% block title %} <title>Topic</title> {% endblock title %} {% block script %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script> {% endblock script %} {% block style %} <style>
+{% extends 'master.html' %} {% load static %} {% block title %} <title>Topic</title> {% endblock title %} {% block script %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script type="module" crossorigin src="{% static 'search-react.js' %}"></script>
+<script type="module" crossorigin src="{% static 'topic-react.js' %}"></script>
+{% endblock script %} {% block style %} <style>
+      #search-results {
+        border-radius: 5px;
+        max-height: 200px;
+        overflow: auto;
+      }
+
+      @media only screen and (max-width: 991px) {
+        #search-results {
+            width: 95.5%;
+            top: 193px;
+          }
+      }
+
+      /* Styling for desktop devices with screen width greater than 768px */
+      @media only screen and (min-width: 992px) {
+        #search-results {
+            width: 226px;
+            top: 55px;
+          }
+      }
+
     a {
       text-decoration: none;
       color: white
@@ -45,9 +69,8 @@
             </ul>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search Topic" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button> {% csrf_token %}
+        <form class="d-flex" role="search" id="search-form">
+          
         </form>
       </div>
     </div>
@@ -62,34 +85,13 @@
       </h5>
       <div class="w-75 mx-auto border rounded-3 p-4 mb-5 position-relative fw-bold">{{ origin_comment }}</div>
     </div>
+
     <!-- Comments -->
-    <div class="container border rounded-3"> {% for comment in comments %}
-      <!-- 2n-1 comments = left side, 2n comments = right side -->
-      <div class="{% if forloop.counter0|divisibleby:2 %}
-              me-auto 
-              {% else %}
-              ms-auto
-              {% endif %} border rounded-3 p-4 m-5 position-relative topic-comment">{{ comment.comment_content }}
-        <!-- Upvote Downvote Div -->
-        <div class="d-flex position-absolute fw-bold" style="bottom:-18px; cursor: pointer;">
-          <div class="border border-1 rounded-5 p-1 me-2" style="background-color: rgb(231, 230, 230);">
-            <img src="{% static 'up.png' %}" alt="upvote icon" width="20px"> {{ comment.comment_upvotes }}
-          </div>
-          <div class="border border-1 rounded-5 p-1" style="background-color: rgb(231, 230, 230);">
-            <img src="{% static 'down.png' %}" alt="upvote icon" width="20px"> {{ comment.comment_downvotes }}
-          </div>
-        </div>
-        <!-- Username Badge Div -->
-        <div class="position-absolute" style="top:-14px;">
-          <h5 class="text-center mb-4">
-            <span class="badge bg-secondary"> <a href="/profile/{{ comment.comment_user_id }}"> {{ comment.comment_username }} </a> </span>
-          </h5>
-        </div>
-      </div> {% endfor %}
+    <div id="root">
+        
     </div>
-  </div>
-  <!-- Load More Comments button -->
-  <button class="btn btn-outline-warning mx-auto my-5 d-block">Load More Comments</button>
+    
+  
   <!-- Make Comment Button & Modal -->
   <button type="button" class="btn btn-warning position-fixed" style="bottom:30px; right: 30px;" data-bs-toggle="modal" data-bs-target="#create-comment-modal">Make Comment</button>
   <!-- Create Comment Modal-->

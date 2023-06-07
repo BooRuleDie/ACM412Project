@@ -68,7 +68,6 @@ def Signup(request):
 def Home(request):       
     context = {
         "authenticated" : False,
-        "last_8_topics" : Topics.objects.order_by('-created_at')[:8],
     }
     
     # change the content of Account Tab in the dashboard if user is authenticated -> Logout and Profile
@@ -87,10 +86,7 @@ def Profile(request, user_id):
     user = Users.objects.get(id=user_id)
     context = {
             "user" : user,
-            "summary": user.summary,
-            "username" : user.username,
             "profile_owner_id" : str(user.id),
-            "user_topics": Topics.objects.filter(user_id = user.id)[:8]
     }
 
     if "user_id" in request.session:
@@ -105,23 +101,12 @@ def Profile(request, user_id):
 
 def TopicView(request, topic_id):
     topic = Topics.objects.get(id=topic_id)
-    comments = Comments.objects.filter(topic_id = topic.id)[:4]
     context = {
         "topic_id" : topic.id,
         "title" : topic.title,
         "username" : topic.user_id.username,
         "user_id" : topic.user_id.id,
         "origin_comment" : topic.origin_comment,
-        "comments" : [
-                {
-                    "comment_id" : comment.id,
-                    "comment_username" : comment.user_id.username, # since user_id column refers to the Users Model we can fetch any info from Users model through user_id column
-                    "comment_user_id" : comment.user_id.id,
-                    "comment_content" : comment.comment,
-                    "comment_upvotes" : comment.upvotes.count(),
-                    "comment_downvotes" : comment.downvotes.count()
-                } for comment in comments
-        ]
     }
     
     if "user_id" in request.session:
@@ -219,7 +204,7 @@ class TopicList(generics.ListAPIView):
     def get_queryset(self):
         start_index = self.kwargs['start_index']
         end_index = self.kwargs['end_index']
-        return Topics.objects.all()[start_index:end_index]
+        return Topics.objects.order_by("-created_at")[start_index:end_index]
 
 # Search API 
 class SearchTopicList(generics.ListAPIView):
