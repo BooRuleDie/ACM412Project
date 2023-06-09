@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
 from .models import Users, Topics, Comments, Upvotes, Downvotes
 from .utils import generatePasswordHash, checkPassword, profilePicturePath
@@ -83,7 +83,7 @@ def Home(request):
     return render(request, 'home.html', context=context)
 
 def Profile(request, user_id):
-    user = Users.objects.get(id=user_id)
+    user = get_object_or_404(Users, id=user_id)
     context = {
             "user" : user,
             "profile_owner_id" : str(user.id),
@@ -100,7 +100,7 @@ def Profile(request, user_id):
     return render(request, 'profile.html', context=context)
 
 def TopicView(request, topic_id):
-    topic = Topics.objects.get(id=topic_id)
+    topic = get_object_or_404(Topics, id=topic_id)
     context = {
         "topic_id" : topic.id,
         "title" : topic.title,
@@ -128,7 +128,7 @@ def HandleModalSubmits(request):
             current_path = request.POST["current-path"]
             title = request.POST["topic-title"]
             comment = request.POST["topic-comment"]
-            user = Users.objects.get(id = request.session["user_id"])
+            user = get_object_or_404(Users, id= request.session["user_id"])
             
             # since user_id refers to the User Model you can't assign a string value, you must assign an instance of User model
             topic = Topics(title=title, origin_comment=comment, user_id=user)
@@ -145,8 +145,8 @@ def HandleModalSubmits(request):
             current_path = request.POST["current-path"]
             topic_id = request.POST["topic-id"]
             topic_comment = request.POST["topic-comment"]
-            user = Users.objects.get(id = request.session["user_id"])
-            topic = Topics.objects.get(id = topic_id)
+            user = get_object_or_404(Users, id= request.session["user_id"])
+            topic = get_object_or_404(Topics, id=topic_id)
             
             # since user_id refers to the User Model you can't assign a string value, you must assign an instance of User model
             comment = Comments(comment = topic_comment, user_id = user, topic_id = topic)
@@ -168,7 +168,7 @@ def HandleModalSubmits(request):
             email = request.POST["email"]
             password = request.POST["password"]
             summary = request.POST["summary"]
-            user = Users.objects.get(id = user_id)
+            user = get_object_or_404(Users, id = user_id)
             # if there is such a key called profile-picture
             if "profile-picture" in request.FILES:     
                 profile_picture = request.FILES["profile-picture"]
@@ -220,7 +220,7 @@ class ProfileTopicList(generics.ListAPIView):
     
     def get_queryset(self):
         user_id = self.kwargs['user_id']
-        user = Users.objects.get(id = user_id)
+        user = get_object_or_404(Users, id = user_id)
 
         start_index = self.kwargs['start_index']
         end_index = self.kwargs['end_index']
@@ -229,8 +229,7 @@ class ProfileTopicList(generics.ListAPIView):
 # Fetch Comments API for particular topics
 @api_view(['GET'])
 def CommentTopicList(request, topic_id, start_index, end_index):
-    topic = Topics.objects.get(id = topic_id)
-
+    topic = get_object_or_404(Topics, id = topic_id)
     comments = Comments.objects.filter(topic_id = topic.id)[start_index:end_index]
     APIResponse = [
                 {
@@ -252,8 +251,8 @@ def CommentTopicList(request, topic_id, start_index, end_index):
 def UpvoteDownvote(request, option, comment_id):
     # if user is authenticated
     if "user_id" in request.session:
-        comment = Comments.objects.get(id = comment_id)
-        user = Users.objects.get(id = request.session["user_id"])
+        comment = get_object_or_404(Comments, id = comment_id)
+        user = get_object_or_404(Users, id= request.session["user_id"])
         
         if option == "upvote":
             vote = Upvotes(user_id = user, comment_id = comment)
