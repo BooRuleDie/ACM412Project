@@ -3,7 +3,7 @@
 [Click Here](https://youtu.be/J4j1rWjeyHg)
 
 # Home Page
-![test](/img/home.png){:.img-100}
+<img src="/img/home.png" width="50">
 
 # Profile Page
 ![test](/img/profile1.png)
