@@ -1,6 +1,6 @@
 <h1 align="center">Overview</h1>
 <p align="center">
-    <a href="https://youtu.be/J4j1rWjeyHg" _target="blank">Click Here</a>
+    <a href="https://youtu.be/J4j1rWjeyHg" target="_blank">Click Here</a>
 </p>
 
 <h1 align="center">Home Page</h1>
