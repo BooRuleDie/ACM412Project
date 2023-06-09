@@ -22,18 +22,18 @@
 
 <h1 align="center">Search</h1>
 <p align="center">
-    <img src="/img/search.png" width="500">
+    <img src="/img/search.png" width="300">
 </p>
 
 <h1 align="center">Login</h1>
 <p align="center">
-    <img src="/img/login.png" width="700">
+    <img src="/img/login.png" width="500">
 </p>
 
 <h1 align="center">Signup</h1>
 <p align="center">
-    <img src="/img/signup1.png" width="700">
-    <img src="/img/signup2.png" width="700">
+    <img src="/img/signup1.png" width="500">
+    <img src="/img/signup2.png" width="500">
 </p>
 
 <h1 align="center">Modals</h1>
