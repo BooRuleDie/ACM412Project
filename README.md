@@ -33,6 +33,8 @@
 <h1 align="center">Signup</h1>
 <p align="center">
     <img src="/img/signup1.png" width="500">
+</p>
+<p align="center">
     <img src="/img/signup2.png" width="500">
 </p>
 
