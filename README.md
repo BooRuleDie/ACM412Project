@@ -8,36 +8,44 @@
     <img src="/img/home.png" width="700">
 </p>
 
+<h1 align="center">Profile Page</h1>
+<p align="center">
+    <img src="/img/profile1.png" width="700">
+    <img src="/img/profile2.png" width="700">
+</p>
 
-# Profile Page
-![test](/img/profile1.png)
-![test](/img/profile2.png)
+<h1 align="center">Topic Page</h1>
+<p align="center">
+    <img src="/img/topic1.png" width="700">
+    <img src="/img/topic2.png" width="700">
+</p>
 
-# Topic Page
-![test](/img/topic1.png)
-![test](/img/topic2.png)
+<h1 align="center">Search</h1>
+<p align="center">
+    <img src="/img/search.png" width="500">
+</p>
 
-# Search 
-![test](/img/search.png)
+<h1 align="center">Login</h1>
+<p align="center">
+    <img src="/img/login.png" width="700">
+</p>
 
-# Login
-![test](/img/login.png)
+<h1 align="center">Signup</h1>
+<p align="center">
+    <img src="/img/signup1.png" width="700">
+    <img src="/img/signup2.png" width="700">
+</p>
 
-# Signup
-![test](/img/signup1.png)
-![test](/img/signup2.png)
-
-# Modals
-
-### Create Topic
-![test](/img/create-topic.png)
-
-### Make Comment
-![test](/img/make-comment.png)
-
-### Update Profile Info
-![test](/img/update-profile-info.png)
-
-
-
-
+<h1 align="center">Modals</h1>
+    <h3 align="left">Create Topic</h3>
+        <p align="center">
+            <img src="/img/create-topic.png" width="500">
+        </p>   
+    <h3 align="left">Make Comment</h3>
+        <p align="center">
+            <img src="/img/make-comment.png" width="500">
+        </p>
+    <h3 align="left">Update Profile Info</h3>
+        <p align="center">
+            <img src="/img/update-profile-info.png" width="500">
+        </p>
