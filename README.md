@@ -37,15 +37,15 @@
 </p>
 
 <h1 align="center">Modals</h1>
-    <h3 align="left">Create Topic</h3>
+    <h3 align="center">Create Topic</h3>
         <p align="center">
             <img src="/img/create-topic.png" width="500">
         </p>   
-    <h3 align="left">Make Comment</h3>
+    <h3 align="center">Make Comment</h3>
         <p align="center">
             <img src="/img/make-comment.png" width="500">
         </p>
-    <h3 align="left">Update Profile Info</h3>
+    <h3 align="center">Update Profile Info</h3>
         <p align="center">
             <img src="/img/update-profile-info.png" width="500">
         </p>
